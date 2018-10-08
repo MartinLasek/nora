@@ -11,7 +11,8 @@
 
 ## Downlaod the Project and compile it on your machine
 All you need is an Access Token from Instagram. I think it was this answer that I used to get it: <br />
-https://stackoverflow.com/questions/16496511/how-to-get-an-instagram-access-token <br />
+https://stackoverflow.com/questions/16496511/how-to-get-an-instagram-access-token
+
 Or maybe it was this one, well I'm sure you'll figure it: <br />
 http://dmolsen.com/2013/04/05/generating-access-tokens-for-instagram/
 
