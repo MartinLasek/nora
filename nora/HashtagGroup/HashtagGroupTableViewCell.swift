@@ -10,7 +10,29 @@ import UIKit
 
 class HashtagGroupTableViewCell: UITableViewCell {
 
+    // MARK: Properties
+
+    // make cell aware of its group
+    var hashtagGroup: HashtagGroup!
+
+    // The HashtagGroupVC will assign a function to
+    // display an alert that informs about the copying
+    var onCopyHashtagComplection: (() -> Void)!
+
     @IBOutlet weak var hashtagGroupLabel: UILabel!
+
+    @IBAction func copyHashtags(_ sender: Any) {
+        guard let group = hashtagGroup else {
+            return
+        }
+
+        var hashtagString = group.hashtags.map({"#" + $0.name + " "}).joined()
+        // remove whitespace before and after the string
+        hashtagString = hashtagString.trimmingCharacters(in: .whitespaces)
+        UIPasteboard.general.string = hashtagString
+
+        onCopyHashtagComplection()
+    }
 
     override func awakeFromNib() {
         super.awakeFromNib()

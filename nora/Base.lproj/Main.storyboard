@@ -34,19 +34,22 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="o9w-qd-goL">
+                                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="TCM-Ss-Sl0">
                                                     <rect key="frame" x="295" y="5" width="65" height="29.5"/>
                                                     <state key="normal" title="copy"/>
+                                                    <connections>
+                                                        <action selector="copyHashtags:" destination="8Jf-cO-sTC" eventType="touchUpInside" id="BaV-Ga-BcO"/>
+                                                    </connections>
                                                 </button>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstAttribute="bottom" secondItem="N8O-vR-448" secondAttribute="bottom" constant="5" id="0xR-p3-9SP"/>
-                                                <constraint firstAttribute="bottom" secondItem="o9w-qd-goL" secondAttribute="bottom" constant="5" id="463-xO-yVy"/>
                                                 <constraint firstAttribute="trailing" secondItem="N8O-vR-448" secondAttribute="trailing" constant="80" id="54a-mt-7Jq"/>
-                                                <constraint firstItem="o9w-qd-goL" firstAttribute="top" secondItem="xBt-VN-zDO" secondAttribute="top" constant="5" id="9AG-tf-bOf"/>
-                                                <constraint firstAttribute="trailing" secondItem="o9w-qd-goL" secondAttribute="trailing" constant="15" id="Aj2-nj-DGG"/>
-                                                <constraint firstItem="o9w-qd-goL" firstAttribute="leading" secondItem="N8O-vR-448" secondAttribute="trailing" id="fuy-Zi-Hq5"/>
+                                                <constraint firstItem="TCM-Ss-Sl0" firstAttribute="top" secondItem="xBt-VN-zDO" secondAttribute="top" constant="5" id="A3P-Wc-Dhp"/>
+                                                <constraint firstAttribute="trailing" secondItem="TCM-Ss-Sl0" secondAttribute="trailing" constant="15" id="agR-o4-WQl"/>
                                                 <constraint firstItem="N8O-vR-448" firstAttribute="leading" secondItem="xBt-VN-zDO" secondAttribute="leading" constant="15" id="rte-2a-ScN"/>
+                                                <constraint firstAttribute="bottom" secondItem="TCM-Ss-Sl0" secondAttribute="bottom" constant="5" id="t7T-Q5-7To"/>
+                                                <constraint firstItem="TCM-Ss-Sl0" firstAttribute="leading" secondItem="N8O-vR-448" secondAttribute="trailing" id="wec-24-Eqy"/>
                                                 <constraint firstItem="N8O-vR-448" firstAttribute="top" secondItem="xBt-VN-zDO" secondAttribute="top" constant="5" id="ysc-Be-uCw"/>
                                             </constraints>
                                         </tableViewCellContentView>

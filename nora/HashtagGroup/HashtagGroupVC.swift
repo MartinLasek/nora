@@ -35,6 +35,7 @@ class HashtagGroupVC: UIViewController {
 
     }
 
+    // `+` button action to add a new group
     @IBAction func addHashtagGroupButton(_ sender: Any) {
 
         // Create an alert controller with a textfield
@@ -116,7 +117,21 @@ extension HashtagGroupVC: UITableViewDelegate, UITableViewDataSource {
                 fatalError("No cell with identifier 'HashtagGroup' found")
         }
 
-        cell.hashtagGroupLabel.text = hashtagGroupList[indexPath.row].name
+        let hashtagGroup = hashtagGroupList[indexPath.row]
+        cell.hashtagGroup = hashtagGroup
+        cell.hashtagGroupLabel.text = hashtagGroup.name
+        cell.onCopyHashtagComplection = {
+            // the alert view
+            let alert = UIAlertController(title: "copied to clipboard", message: nil, preferredStyle: .alert)
+            self.present(alert, animated: true, completion: nil)
+
+            // Dismiss alert after 1 second
+            let when = DispatchTime.now() + 1
+            DispatchQueue.main.asyncAfter(deadline: when) {
+                alert.dismiss(animated: true, completion: nil)
+            }
+        }
+
         return cell
     }
 }
