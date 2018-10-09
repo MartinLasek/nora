@@ -13,6 +13,7 @@ class HashtagGroupVC: UIViewController, UITableViewDelegate, UITableViewDataSour
     // MARK: Properties
     let cellIdentifier = "hashtagGroupCell"
     var hashtagGroupList = [HashtagGroup]()
+    var selectedHashtagGroup: HashtagGroup!
 
     @IBOutlet weak var tableView: UITableView!
 
@@ -84,9 +85,11 @@ class HashtagGroupVC: UIViewController, UITableViewDelegate, UITableViewDataSour
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let vc = segue.destination as? HashtagGroupDetailVC {
-            vc.hashtags = [
-                Hashtag(name: "webdevelopment", usages: 391827)
-            ]
+
+            // get selected row
+            if let indexPath = self.tableView.indexPathForSelectedRow {
+                vc.hashtagGroup = hashtagGroupList[indexPath.row]
+            }
         }
     }
 }

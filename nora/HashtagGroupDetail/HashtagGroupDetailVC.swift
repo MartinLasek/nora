@@ -11,8 +11,8 @@ import UIKit
 class HashtagGroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     // MARK: Properties
-
-    var hashtags = [Hashtag]()
+    let cellIdentifier = "hashtagGroupDetailCell"
+    var hashtagGroup: HashtagGroup!
 
     @IBOutlet weak var tableView: UITableView!
 
@@ -28,35 +28,33 @@ class HashtagGroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDa
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return hashtags.count
+        return hashtagGroup.hashtags.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
-        let cellIdentifier = "hashtagGroupDetailCell"
         guard
             let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? HashtagGroupDetailTableViewCell
         else {
-                fatalError("No cell with identifier 'HashtagGroup' found")
+            fatalError("No cell with identifier 'HashtagGroup' found")
         }
 
-        let hashtag = hashtags[indexPath.row]
+        let hashtag = hashtagGroup.hashtags[indexPath.row]
+
         cell.hashtagLabel.text = "#" + hashtag.name
         cell.hashtagUsageLabel.text = String(hashtag.usages)
+
         return cell
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let vc = segue.destination as? HashtagSearchVC {
-            vc.hashtagsOfselectedGroup = hashtags
+            vc.hashtagGroup = hashtagGroup
+            vc.delegate = self
         }
     }
 
-    func loadSample() {
-        hashtags = [
-            Hashtag(name: "buildtheweb", usages: 78246),
-            Hashtag(name: "dev", usages: 2301147),
-            Hashtag(name: "swiftlang", usages: 5925810)
-        ]
+    func add(hashtags: [Hashtag]) {
+        hashtagGroup.hashtags.append(contentsOf: hashtags)
+        self.tableView.reloadData()
     }
 }

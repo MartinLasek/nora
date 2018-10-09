@@ -13,8 +13,16 @@ class HashtagSearchVC: UIViewController {
     // MARK: Properties
 
     var hashtagsOfSearchResult = [Hashtag]()
-    var hashtagsOfselectedGroup = [Hashtag]()
+    var selectedHashtags = [Hashtag]()
     let instagramClient = InstagramClient()
+
+    // assigned by prepare:segue in HashtagGroupDetail
+    var hashtagGroup: HashtagGroup!
+
+    // So we can add selected hashtags to the hashtags
+    // of the delegates hashtagGroup before dismissing
+    // this search view controller.
+    var delegate: HashtagGroupDetailVC!
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var searchBar: UISearchBar!
@@ -33,11 +41,15 @@ class HashtagSearchVC: UIViewController {
         // Set to `false` because otherwise table cell touches
         // are eaten by the gestureRecognizer
         gestureRecognizer.cancelsTouchesInView = false
-
         self.view.addGestureRecognizer(gestureRecognizer)
     }
 
     @IBAction func cancelButton(_ sender: Any) {
+        self.dismiss(animated: true, completion: nil)
+    }
+
+    @IBAction func saveButton(_ sender: Any) {
+        delegate.add(hashtags: selectedHashtags)
         self.dismiss(animated: true, completion: nil)
     }
 }
@@ -47,11 +59,13 @@ class HashtagSearchVC: UIViewController {
 extension HashtagSearchVC: UISearchBarDelegate {
 
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if searchText.isEmpty {
+        let adjustedSearchText = removeRestrictedChars(from: searchText)
+
+        if adjustedSearchText.isEmpty {
             hashtagsOfSearchResult = []
             self.tableView.reloadData()
         } else {
-            instagramClient.searchInstagram(for: searchText, completion: { searchResult in
+            instagramClient.searchInstagram(for: adjustedSearchText, completion: { searchResult in
                 self.hashtagsOfSearchResult = searchResult
                 self.tableView.reloadData()
             })
@@ -61,6 +75,15 @@ extension HashtagSearchVC: UISearchBarDelegate {
     // Dismisses Keyboard when hitting "done".
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.endEditing(true)
+    }
+
+    // - removes non-alphanumerical characters
+    // - transforms to lowercase
+    func removeRestrictedChars(from searchText: String) -> String {
+        var result = searchText
+        result = result.components(separatedBy: CharacterSet.alphanumerics.inverted).joined()
+        result = result.lowercased()
+        return result
     }
 }
 
@@ -79,10 +102,16 @@ extension HashtagSearchVC: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let hashtag = hashtagsOfSearchResult[indexPath.row]
 
-        if nil != hashtagsOfselectedGroup.first { $0.name == hashtag.name } {
-            hashtagsOfselectedGroup.removeAll(where: { $0.name == hashtag.name })
+        // nothing shall happen if hashtag is part of hashtagGroup already
+        if hashtagGroup.hashtags.contains(where: {h in h.name == hashtag.name}) {
+            return
+        }
+
+        // if hashtag is in selectedHashtags list remove, otherwise add
+        if nil != selectedHashtags.first { $0.name == hashtag.name } {
+            selectedHashtags.removeAll(where: { $0.name == hashtag.name })
         } else {
-            hashtagsOfselectedGroup.append(hashtag)
+            selectedHashtags.append(hashtag)
         }
 
         self.tableView.reloadData()
@@ -107,13 +136,18 @@ extension HashtagSearchVC: UITableViewDataSource, UITableViewDelegate {
 
         let hashtag = hashtagsOfSearchResult[indexPath.row]
 
-        // resetting the state because if it was `added` before
-        // and is not in the list `hashtagsOfselectedGroup` it won't
-        // gain the `none` state otherwise
+        // resetting the state because if it was `selected` and is not in
+        // the list `selectedHashtags` it won't gain the `none` state
         hashtag.state = Hashtag.State.none
 
-        if nil != hashtagsOfselectedGroup.first { $0.name == hashtag.name } {
+        // asign `added` state
+        if nil != hashtagGroup.hashtags.first { $0.name == hashtag.name } {
             hashtag.state = Hashtag.State.added
+        }
+
+        // asign `selected` state
+        if nil != selectedHashtags.first { $0.name == hashtag.name } {
+            hashtag.state = Hashtag.State.selected
         }
 
         cell.hashtagSearchLabel.text = "#" + hashtag.name

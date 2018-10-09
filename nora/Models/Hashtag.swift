@@ -13,7 +13,7 @@ final class Hashtag {
 extension Hashtag {
     enum State: String {
         case none = ""
-        case added
+        case added = "already added"
         case selected
     }
 }
