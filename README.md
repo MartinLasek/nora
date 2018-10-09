@@ -5,13 +5,16 @@
   Create groups according to your niche on Instagram and manage your hashtags
 </p>
 
-## Download it for free from the App Store
+## Download the App for free from the App Store
 <b> - To Be Published- </b>
 
 
-## How to use it
-All you need is an Access Token from Instagram. I think it was this answer that I used to get it:
+## Download the Project and compile it on your machine
+All you need is an Access Token from Instagram. I think it was this answer that I used to get it: <br />
 https://stackoverflow.com/questions/16496511/how-to-get-an-instagram-access-token
+
+Or maybe it was this one, well I'm sure you'll figure it: <br />
+http://dmolsen.com/2013/04/05/generating-access-tokens-for-instagram/
 
 And then you'll need to create a struct with a static property inside the project:
 ```swift
