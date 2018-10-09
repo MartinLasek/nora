@@ -58,6 +58,16 @@ class HashtagGroupVC: UIViewController {
                 return
             }
 
+            // Alert and early return
+            // if name for group already exists
+            if self.hashtagGroupList.contains(where: { $0.name == name }) {
+                // Create an alert controller with a textfield
+                let uniqueAlert = UIAlertController(title: "Name must be unique!", message: nil, preferredStyle: .alert)
+                uniqueAlert.addAction(UIAlertAction(title: "Ok", style: .default))
+                self.present(uniqueAlert, animated: true, completion: nil)
+                return
+            }
+
             self.hashtagGroupList.append(HashtagGroup(name: name))
 
             // store updated hashtag group list to disk
