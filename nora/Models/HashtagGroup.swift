@@ -1,4 +1,4 @@
-final class HashtagGroup {
+final class HashtagGroup: Codable {
     let name: String
     var hashtags: [Hashtag]
 

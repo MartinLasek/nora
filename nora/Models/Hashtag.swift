@@ -1,4 +1,4 @@
-final class Hashtag {
+final class Hashtag: Codable {
     let name: String
     let usages: Int
     var state: State
@@ -11,9 +11,9 @@ final class Hashtag {
 }
 
 extension Hashtag {
-    enum State: String {
+    enum State: String, Codable {
         case none = ""
-        case added = "already added"
+        case added
         case selected
     }
 }

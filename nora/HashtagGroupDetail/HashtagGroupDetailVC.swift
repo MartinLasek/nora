@@ -8,11 +8,14 @@
 
 import UIKit
 
-class HashtagGroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class HashtagGroupDetailVC: UIViewController {
     
     // MARK: Properties
     let cellIdentifier = "hashtagGroupDetailCell"
     var hashtagGroup: HashtagGroup!
+
+    // Taking care of storing/retrieving data to/from disk
+    let hashtagGroupRepository = HashtagGroupRepository()
 
     @IBOutlet weak var tableView: UITableView!
 
@@ -23,6 +26,27 @@ class HashtagGroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDa
         tableView.dataSource = self
     }
 
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let vc = segue.destination as? HashtagSearchVC {
+            vc.hashtagGroup = hashtagGroup
+            vc.delegate = self
+        }
+    }
+
+    func add(hashtags: [Hashtag]) {
+        hashtagGroup.hashtags.append(contentsOf: hashtags)
+
+        // store updated hashtag group to disk
+        do { try self.hashtagGroupRepository.store(hashtagGroup) }
+        catch {}
+
+        self.tableView.reloadData()
+    }
+}
+
+// MARK: Tableview
+
+extension HashtagGroupDetailVC: UITableViewDelegate, UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
@@ -44,17 +68,5 @@ class HashtagGroupDetailVC: UIViewController, UITableViewDelegate, UITableViewDa
         cell.hashtagUsageLabel.text = String(hashtag.usages)
 
         return cell
-    }
-
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let vc = segue.destination as? HashtagSearchVC {
-            vc.hashtagGroup = hashtagGroup
-            vc.delegate = self
-        }
-    }
-
-    func add(hashtags: [Hashtag]) {
-        hashtagGroup.hashtags.append(contentsOf: hashtags)
-        self.tableView.reloadData()
     }
 }
