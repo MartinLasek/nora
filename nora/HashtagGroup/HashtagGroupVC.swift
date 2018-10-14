@@ -17,13 +17,17 @@ class HashtagGroupVC: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
 
+    // load hashtag group before table cell hook is executed
+    // so it contains all hashtags
+    override func viewWillAppear(_ animated: Bool) {
+       loadHashtagGroups()
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         tableView.delegate = self
         tableView.dataSource = self
-
-        loadHashtagGroups()
     }
 
     // `+` button action to add a new group
