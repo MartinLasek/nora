@@ -19,13 +19,15 @@ class HashtagGroupDetailVC: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
 
+    override func viewWillAppear(_ animated: Bool) {
+        loadHashtagGroup()
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         tableView.delegate = self
         tableView.dataSource = self
-
-        loadHashtagGroup()
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -73,7 +75,7 @@ extension HashtagGroupDetailVC: UITableViewDelegate, UITableViewDataSource {
         let hashtag = hashtagGroup.hashtags[indexPath.row]
 
         cell.hashtagLabel.text = "#" + hashtag.name
-        cell.hashtagUsageLabel.text = String(hashtag.usages)
+        cell.hashtagUsageLabel.text = hashtag.usages.dotNotation()
 
         return cell
     }

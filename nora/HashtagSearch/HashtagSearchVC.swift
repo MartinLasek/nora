@@ -163,7 +163,7 @@ extension HashtagSearchVC: UITableViewDataSource, UITableViewDelegate {
         }
 
         cell.hashtagSearchLabel.text = "#" + hashtag.name
-        cell.hashtagSearchUsageLabel.text = String(hashtag.usages)
+        cell.hashtagSearchUsageLabel.text = hashtag.usages.dotNotation()
         cell.hashtagSearchStateLabel.text = hashtag.state.rawValue
 
         return cell

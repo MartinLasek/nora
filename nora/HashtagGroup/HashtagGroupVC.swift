@@ -123,7 +123,7 @@ extension HashtagGroupVC: UITableViewDelegate, UITableViewDataSource {
             self.present(alert, animated: true, completion: nil)
 
             // Dismiss alert after 1 second
-            let when = DispatchTime.now() + 1
+            let when = DispatchTime.now() + 0.5
             DispatchQueue.main.asyncAfter(deadline: when) {
                 alert.dismiss(animated: true, completion: nil)
             }
