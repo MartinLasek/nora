@@ -79,4 +79,25 @@ extension HashtagGroupDetailVC: UITableViewDelegate, UITableViewDataSource {
 
         return cell
     }
+
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+
+        if editingStyle == .delete {
+            let hashtag = self.hashtagGroup.hashtags[indexPath.row]
+            guard let hashtagId = hashtag.id else {
+                return
+            }
+            guard let hashtagGroupId = self.hashtagGroup.id else {
+                return
+            }
+
+            hashtagRepository.removeHashtag(by: hashtagId)
+            hashtagGroup = hashtagRepository.selectHashtagGroup(by: hashtagGroupId)
+
+            // it must come after deleting from database
+            // becuase hashtagGroupList must at this point have the same number
+            // of entries like the rows after the deletion happened
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+        }
+    }
 }

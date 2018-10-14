@@ -9,6 +9,9 @@ import SQLite3
 // globale singleton of database manager
 let hashtagRepository = HashtagRepository()
 
+typealias HashtagGroupId = Int
+typealias HashtagId = Int
+
 final class HashtagRepository {
     var db: OpaquePointer?
 
@@ -162,7 +165,7 @@ print(fileURL)
             return
         }
 
-        removeAllHashtagsWith(hashtagGroupId: hashtagGroupId)
+        removeAllHashtags(by: hashtagGroupId)
     }
 
     // MARK: Hashtag
@@ -224,7 +227,6 @@ print(fileURL)
         }
     }
 
-    typealias HashtagGroupId = Int
     func selectAllHashtags(by hashtagGroupId: HashtagGroupId) -> ([Hashtag]) {
         // statement pointer
         var stmt: OpaquePointer?
@@ -266,7 +268,7 @@ print(fileURL)
         return hashtagList
     }
 
-    func removeAllHashtagsWith(hashtagGroupId: Int) {
+    func removeAllHashtags(by hashtagGroupId: HashtagGroupId) {
         var stmt: OpaquePointer?
         let id = String(hashtagGroupId)
 
@@ -280,7 +282,26 @@ print(fileURL)
         //executing the query to insert values
         if sqlite3_step(stmt) != SQLITE_DONE {
             let errmsg = String(cString: sqlite3_errmsg(db)!)
-            print("failure delete hashtagGroup with id \(id): \(errmsg)")
+            print("failure delete hashtags with hashtag group id \(id): \(errmsg)")
+            return
+        }
+    }
+
+    func removeHashtag(by hashtagId: HashtagId) {
+        var stmt: OpaquePointer?
+        let id = String(hashtagId)
+
+        // preparing the query
+        if sqlite3_prepare(db, "DELETE FROM Hashtag WHERE id=\(id)", -1, &stmt, nil) != SQLITE_OK{
+            let errmsg = String(cString: sqlite3_errmsg(db)!)
+            print("error select: \(errmsg)")
+            return
+        }
+
+        //executing the query to insert values
+        if sqlite3_step(stmt) != SQLITE_DONE {
+            let errmsg = String(cString: sqlite3_errmsg(db)!)
+            print("failure delete hashtag with id \(id): \(errmsg)")
             return
         }
     }
