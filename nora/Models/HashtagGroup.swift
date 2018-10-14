@@ -1,9 +1,10 @@
-final class HashtagGroup: Codable {
-    // `name` is the identifier and must be unique
+final class HashtagGroup {
+    var id: Int?
     let name: String
     var hashtags: [Hashtag]
 
-    init(name: String, hashtags: [Hashtag] = [Hashtag]()) {
+    init(id: Int? = nil, name: String, hashtags: [Hashtag] = [Hashtag]()) {
+        self.id = id
         self.name = name
         self.hashtags = hashtags
     }

@@ -15,9 +15,6 @@ class HashtagGroupVC: UIViewController {
     var hashtagGroupList = [HashtagGroup]()
     var selectedHashtagGroup: HashtagGroup!
 
-    // Taking care of storing/retrieving data to/from disk
-    let hashtagGroupRepository = HashtagGroupRepository()
-
     @IBOutlet weak var tableView: UITableView!
 
     override func viewDidLoad() {
@@ -26,13 +23,7 @@ class HashtagGroupVC: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
 
-        // retrieve updated hashtag group list from disk
-        do {
-            if let hashtagGL = try hashtagGroupRepository.retrieveHashtagGroupList() {
-                hashtagGroupList = hashtagGL
-            }
-        } catch {}
-
+        loadHashtagGroups()
     }
 
     // `+` button action to add a new group
@@ -69,11 +60,8 @@ class HashtagGroupVC: UIViewController {
                 return
             }
 
-            self.hashtagGroupList.append(HashtagGroup(name: name))
-
-            // store updated hashtag group list to disk
-            do { try self.hashtagGroupRepository.store(self.hashtagGroupList) }
-            catch {}
+            hashtagRepository.insert(HashtagGroup(name: name))
+            self.hashtagGroupList = hashtagRepository.selectAllHashtagGroups()
 
             guard
                 let cell = self.tableView.dequeueReusableCell(withIdentifier: self.cellIdentifier) as? HashtagGroupTableViewCell
@@ -97,6 +85,11 @@ class HashtagGroupVC: UIViewController {
             }
         }
     }
+
+    func loadHashtagGroups() {
+        hashtagGroupList = hashtagRepository.selectAllHashtagGroups()
+        self.tableView.reloadData()
+    }
 }
 
 // MARK: TableView
@@ -113,14 +106,14 @@ extension HashtagGroupVC: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard
             let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? HashtagGroupTableViewCell
-            else {
-                fatalError("No cell with identifier 'HashtagGroup' found")
+        else {
+            fatalError("No cell with identifier 'HashtagGroup' found")
         }
 
         let hashtagGroup = hashtagGroupList[indexPath.row]
         cell.hashtagGroup = hashtagGroup
         cell.hashtagGroupLabel.text = hashtagGroup.name
-        cell.onCopyHashtagComplection = {
+        cell.onCopyHashtagCompletion = {
             // the alert view
             let alert = UIAlertController(title: "copied to clipboard", message: nil, preferredStyle: .alert)
             self.present(alert, animated: true, completion: nil)
@@ -134,4 +127,33 @@ extension HashtagGroupVC: UITableViewDelegate, UITableViewDataSource {
 
         return cell
     }
+
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+
+        if editingStyle == .delete {
+            let hashtagGroup = hashtagGroupList[indexPath.row]
+            guard let id = hashtagGroup.id else {
+                return
+            }
+
+            hashtagRepository.removeHashtagGroupBy(hashtagGroupId: id)
+            hashtagGroupList = hashtagRepository.selectAllHashtagGroups()
+
+            // it must come after deleting from database
+            // becuase hashtagGroupList must at this point have the same number
+            // of entries like the rows after the deletion happened
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+        }
+    }
 }
+
+/*
+override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    if editingStyle == .delete {
+        objects.remove(at: indexPath.row)
+        tableView.deleteRows(at: [indexPath], with: .fade)
+    } else if editingStyle == .insert {
+        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
+    }
+}
+*/

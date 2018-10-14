@@ -17,7 +17,7 @@ class HashtagGroupTableViewCell: UITableViewCell {
 
     // The HashtagGroupVC will assign a function to
     // display an alert that informs about the copying
-    var onCopyHashtagComplection: (() -> Void)!
+    var onCopyHashtagCompletion: (() -> Void)!
 
     @IBOutlet weak var hashtagGroupLabel: UILabel!
 
@@ -31,7 +31,7 @@ class HashtagGroupTableViewCell: UITableViewCell {
         hashtagString = hashtagString.trimmingCharacters(in: .whitespaces)
         UIPasteboard.general.string = hashtagString
 
-        onCopyHashtagComplection()
+        onCopyHashtagCompletion()
     }
 
     override func awakeFromNib() {

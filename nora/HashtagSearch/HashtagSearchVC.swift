@@ -66,7 +66,19 @@ extension HashtagSearchVC: UISearchBarDelegate {
             self.tableView.reloadData()
         } else {
             instagramClient.searchInstagram(for: adjustedSearchText, completion: { searchResult in
-                self.hashtagsOfSearchResult = searchResult
+                guard let hashtagGroupId = self.hashtagGroup.id else {
+                    print("`hashtagGroup` has no id. It is needed to instantiate `Hashtag` from the search result")
+                    return
+                }
+
+                self.hashtagsOfSearchResult = searchResult.data.map {
+                    Hashtag(
+                        name: $0.name,
+                        usages: $0.mediaCount,
+                        hashtagGroupId: hashtagGroupId
+                    )
+                }
+
                 self.tableView.reloadData()
             })
         }

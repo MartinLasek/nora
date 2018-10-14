@@ -15,7 +15,7 @@ class HashtagGroupDetailVC: UIViewController {
     var hashtagGroup: HashtagGroup!
 
     // Taking care of storing/retrieving data to/from disk
-    let hashtagGroupRepository = HashtagGroupRepository()
+    let hashtagRepository = HashtagRepository()
 
     @IBOutlet weak var tableView: UITableView!
 
@@ -24,6 +24,8 @@ class HashtagGroupDetailVC: UIViewController {
 
         tableView.delegate = self
         tableView.dataSource = self
+
+        loadHashtagGroup()
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -34,12 +36,18 @@ class HashtagGroupDetailVC: UIViewController {
     }
 
     func add(hashtags: [Hashtag]) {
-        hashtagGroup.hashtags.append(contentsOf: hashtags)
+        for hashtag in hashtags {
+            hashtagRepository.insert(hashtag)
+        }
 
-        // store updated hashtag group to disk
-        do { try self.hashtagGroupRepository.store(hashtagGroup) }
-        catch {}
+        loadHashtagGroup()
+    }
 
+    func loadHashtagGroup() {
+        guard let id = hashtagGroup.id else {
+            return
+        }
+        hashtagGroup = hashtagRepository.selectHashtagGroup(by: id)
         self.tableView.reloadData()
     }
 }
