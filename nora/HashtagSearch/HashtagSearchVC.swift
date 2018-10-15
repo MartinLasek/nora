@@ -42,6 +42,9 @@ class HashtagSearchVC: UIViewController {
         // are eaten by the gestureRecognizer
         gestureRecognizer.cancelsTouchesInView = false
         self.view.addGestureRecognizer(gestureRecognizer)
+
+        // focus on search bar when view is loaded
+        self.searchBar.becomeFirstResponder()
     }
 
     @IBAction func cancelButton(_ sender: Any) {

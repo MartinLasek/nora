@@ -19,15 +19,18 @@ class HashtagGroupDetailVC: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
 
-    override func viewWillAppear(_ animated: Bool) {
-        loadHashtagGroup()
-    }
+    // Don't use this to prepare view with data
+    // Because it would display data from the hashtag group
+    // that was used for this view before
+    override func viewWillAppear(_ animated: Bool) {}
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         tableView.delegate = self
         tableView.dataSource = self
+
+        self.navigationItem.title = self.hashtagGroup.name
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
