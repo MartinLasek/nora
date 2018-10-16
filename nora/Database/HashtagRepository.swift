@@ -97,7 +97,7 @@ print(fileURL)
         var hashtagGroup: HashtagGroup?
 
         // preparing the query
-        if sqlite3_prepare(db, "SELECT * FROM HashtagGroup", -1, &stmt, nil) != SQLITE_OK{
+        if sqlite3_prepare(db, "SELECT * FROM HashtagGroup WHERE id=\(hashtagGroupId)", -1, &stmt, nil) != SQLITE_OK{
             let errmsg = String(cString: sqlite3_errmsg(db)!)
             print("error select: \(errmsg)")
             return nil

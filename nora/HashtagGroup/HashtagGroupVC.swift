@@ -28,8 +28,6 @@ class HashtagGroupVC: UIViewController {
 
         tableView.delegate = self
         tableView.dataSource = self
-
-        loadHashtagGroups()
     }
 
     // `+` button action to add a new group

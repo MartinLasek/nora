@@ -16,13 +16,11 @@ class HashtagSearchVC: UIViewController {
     var selectedHashtags = [Hashtag]()
     let instagramClient = InstagramClient()
 
+    // Taking care of storing/retrieving data to/from disk
+    let hashtagRepository = HashtagRepository()
+
     // assigned by prepare:segue in HashtagGroupDetail
     var hashtagGroup: HashtagGroup!
-
-    // So we can add selected hashtags to the hashtags
-    // of the delegates hashtagGroup before dismissing
-    // this search view controller.
-    var delegate: HashtagGroupDetailVC!
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var searchBar: UISearchBar!
@@ -52,7 +50,9 @@ class HashtagSearchVC: UIViewController {
     }
 
     @IBAction func saveButton(_ sender: Any) {
-        delegate.add(hashtags: selectedHashtags)
+        for hashtag in selectedHashtags {
+            hashtagRepository.insert(hashtag)
+        }
         self.dismiss(animated: true, completion: nil)
     }
 }

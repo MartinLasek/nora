@@ -19,10 +19,9 @@ class HashtagGroupDetailVC: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
 
-    // Don't use this to prepare view with data
-    // Because it would display data from the hashtag group
-    // that was used for this view before
-    override func viewWillAppear(_ animated: Bool) {}
+    override func viewWillAppear(_ animated: Bool) {
+        loadHashtagGroup()
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,16 +36,7 @@ class HashtagGroupDetailVC: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let vc = segue.destination as? HashtagSearchVC {
             vc.hashtagGroup = hashtagGroup
-            vc.delegate = self
         }
-    }
-
-    func add(hashtags: [Hashtag]) {
-        for hashtag in hashtags {
-            hashtagRepository.insert(hashtag)
-        }
-
-        loadHashtagGroup()
     }
 
     func loadHashtagGroup() {
