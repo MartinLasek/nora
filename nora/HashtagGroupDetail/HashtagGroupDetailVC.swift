@@ -29,6 +29,7 @@ class HashtagGroupDetailVC: UIViewController {
 
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.allowsSelection = false
 
         self.navigationItem.title = self.hashtagGroup.name
     }

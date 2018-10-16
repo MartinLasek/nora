@@ -94,6 +94,7 @@ extension HashtagSearchVC: UISearchBarDelegate {
 
     // - removes non-alphanumerical characters
     // - transforms to lowercase
+    // - replace special characters like äöü to aeu
     func removeRestrictedChars(from searchText: String) -> String {
         var result = searchText
         result = result.components(separatedBy: CharacterSet.alphanumerics.inverted).joined()
