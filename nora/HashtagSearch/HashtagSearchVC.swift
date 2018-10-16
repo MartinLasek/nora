@@ -98,6 +98,7 @@ extension HashtagSearchVC: UISearchBarDelegate {
         var result = searchText
         result = result.components(separatedBy: CharacterSet.alphanumerics.inverted).joined()
         result = result.lowercased()
+        result = result.folding(options: .diacriticInsensitive, locale: nil)
         return result
     }
 }
