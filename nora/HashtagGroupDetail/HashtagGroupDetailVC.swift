@@ -21,6 +21,7 @@ class HashtagGroupDetailVC: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         loadHashtagGroup()
+        sortHashtags()
     }
 
     override func viewDidLoad() {
@@ -44,6 +45,11 @@ class HashtagGroupDetailVC: UIViewController {
             return
         }
         hashtagGroup = hashtagRepository.selectHashtagGroup(by: id)
+        self.tableView.reloadData()
+    }
+
+    func sortHashtags() {
+        hashtagGroup.hashtags.sort(by: {$0.usages > $1.usages})
         self.tableView.reloadData()
     }
 }

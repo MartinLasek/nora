@@ -131,21 +131,36 @@ extension HashtagGroupVC: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
 
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-
-        if editingStyle == .delete {
-            let hashtagGroup = hashtagGroupList[indexPath.row]
+    // delete swipe action
+    private func contextualDeleteAction(forRowAtIndexPath indexPath: IndexPath) -> UIContextualAction {
+        return UIContextualAction(style: .destructive, title: "Delete") { (contextAction, sourceView, completionHandler) in
+            let hashtagGroup = self.hashtagGroupList[indexPath.row]
             guard let id = hashtagGroup.id else {
-                return
+                return completionHandler(false)
             }
 
             hashtagRepository.removeHashtagGroupBy(hashtagGroupId: id)
-            hashtagGroupList = hashtagRepository.selectAllHashtagGroups()
+            self.hashtagGroupList = hashtagRepository.selectAllHashtagGroups()
 
             // it must come after deleting from database
             // becuase hashtagGroupList must at this point have the same number
             // of entries like the rows after the deletion happened
-            tableView.deleteRows(at: [indexPath], with: .automatic)
+            self.tableView.deleteRows(at: [indexPath], with: .automatic)
         }
+    }
+
+    // edit swipe action
+    // TODO(mala): you will need an UPDATE function for hashtagGroup
+//    private func contextualEditAction(forRowAtIndexPath indexPath: IndexPath) -> UIContextualAction {
+//        return UIContextualAction(style: .normal, title: "Edit") { (contextAction, sourceView, completionHandler) in
+//            completionHandler(true)
+//        }
+//    }
+
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let deleteAction = self.contextualDeleteAction(forRowAtIndexPath: indexPath)
+        //let editAction = self.contextualEditAction(forRowAtIndexPath: indexPath)
+        let swipeConfig = UISwipeActionsConfiguration(actions: [deleteAction, /*editAction*/])
+        return swipeConfig
     }
 }

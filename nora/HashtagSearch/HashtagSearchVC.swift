@@ -143,7 +143,7 @@ extension HashtagSearchVC: UITableViewDataSource, UITableViewDelegate {
                 for: indexPath
             ) as? HashtagSearchTableViewCell
         else {
-            fatalError("No cell with identifier 'HashtagGroup' found")
+            fatalError("No cell with identifier '\(cellIdentifier)' found")
         }
 
         // Early return since "index out of range" once occured here.
