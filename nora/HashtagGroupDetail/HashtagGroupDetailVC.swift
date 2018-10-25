@@ -22,6 +22,7 @@ class HashtagGroupDetailVC: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         loadHashtagGroup()
         sortHashtags()
+        setNavigationTitle()
     }
 
     override func viewDidLoad() {
@@ -30,8 +31,6 @@ class HashtagGroupDetailVC: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.allowsSelection = false
-
-        self.navigationItem.title = self.hashtagGroup.name
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -51,6 +50,11 @@ class HashtagGroupDetailVC: UIViewController {
     func sortHashtags() {
         hashtagGroup.hashtags.sort(by: {$0.usages > $1.usages})
         self.tableView.reloadData()
+    }
+
+    func setNavigationTitle() {
+        let hashtagCount = "(\(self.hashtagGroup.hashtags.count)) "
+        self.navigationItem.title =  hashtagCount + self.hashtagGroup.name
     }
 }
 
@@ -91,8 +95,13 @@ extension HashtagGroupDetailVC: UITableViewDelegate, UITableViewDataSource {
                 return
             }
 
+            // remove from database
             hashtagRepository.removeHashtag(by: hashtagId)
+            // retrieve from database
             hashtagGroup = hashtagRepository.selectHashtagGroup(by: hashtagGroupId)
+
+            // update navigation title (hashtag count)
+            setNavigationTitle()
 
             // it must come after deleting from database
             // becuase hashtagGroupList must at this point have the same number
