@@ -56,7 +56,9 @@ class HashtagGroupVC: UIViewController {
 
             // Alert and early return
             // if name for group already exists
-            if self.hashtagGroupList.contains(where: { $0.name == name }) {
+            if self.hashtagGroupList.contains(where: {
+                self.normalizeString($0.name) == self.normalizeString(name)
+            }) {
                 // Create an alert controller with a textfield
                 let uniqueAlert = UIAlertController(title: "Name must be unique!", message: nil, preferredStyle: .alert)
                 uniqueAlert.addAction(UIAlertAction(title: "Ok", style: .default))
@@ -92,6 +94,13 @@ class HashtagGroupVC: UIViewController {
     func loadHashtagGroups() {
         hashtagGroupList = hashtagRepository.selectAllHashtagGroups()
         self.tableView.reloadData()
+    }
+
+    private func normalizeString(_ text: String) -> String {
+        var result = text
+        result = result.trimmingCharacters(in: .whitespaces)
+        result = result.lowercased()
+        return result
     }
 }
 
