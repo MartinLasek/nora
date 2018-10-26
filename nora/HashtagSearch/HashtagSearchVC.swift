@@ -62,7 +62,7 @@ class HashtagSearchVC: UIViewController {
 extension HashtagSearchVC: UISearchBarDelegate {
 
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        let adjustedSearchText = removeRestrictedChars(from: searchText)
+        let adjustedSearchText = urlEncode(from: searchText)
 
         if adjustedSearchText.isEmpty {
             hashtagsOfSearchResult = []
@@ -98,14 +98,16 @@ extension HashtagSearchVC: UISearchBarDelegate {
         searchBar.endEditing(true)
     }
 
-    // - removes non-alphanumerical characters
     // - transforms to lowercase
-    // - replace special characters like äöü to aeu
-    func removeRestrictedChars(from searchText: String) -> String {
+    // - encodes special characters suitable for url
+    func urlEncode(from searchText: String) -> String {
         var result = searchText
-        result = result.components(separatedBy: CharacterSet.alphanumerics.inverted).joined()
         result = result.lowercased()
-        result = result.folding(options: .diacriticInsensitive, locale: nil)
+
+        if let urlEncoded = result.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) {
+            result = urlEncoded
+        }
+
         return result
     }
 }
