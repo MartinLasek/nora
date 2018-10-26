@@ -22,7 +22,6 @@ class HashtagGroupDetailVC: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         loadHashtagGroup()
         sortHashtags()
-        setNavigationTitle()
     }
 
     override func viewDidLoad() {
@@ -31,6 +30,8 @@ class HashtagGroupDetailVC: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.allowsSelection = false
+
+        self.navigationItem.title = self.hashtagGroup.name
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -51,11 +52,6 @@ class HashtagGroupDetailVC: UIViewController {
         hashtagGroup.hashtags.sort(by: {$0.usages > $1.usages})
         self.tableView.reloadData()
     }
-
-    func setNavigationTitle() {
-        let hashtagCount = "(\(self.hashtagGroup.hashtags.count)) "
-        self.navigationItem.title =  hashtagCount + self.hashtagGroup.name
-    }
 }
 
 // MARK: Tableview
@@ -67,6 +63,12 @@ extension HashtagGroupDetailVC: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return hashtagGroup.hashtags.count
+    }
+
+    // see: https://www.hackingwithswift.com/example-code/uikit/how-to-add-a-section-header-to-a-table-view
+    // google search: https://www.google.de/search?q=ios+tableview+section+header&oq=ios+tableview+section+header
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return "Hashtags: \(hashtagGroup.hashtags.count)"
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -100,13 +102,20 @@ extension HashtagGroupDetailVC: UITableViewDelegate, UITableViewDataSource {
             // retrieve from database
             hashtagGroup = hashtagRepository.selectHashtagGroup(by: hashtagGroupId)
 
-            // update navigation title (hashtag count)
-            setNavigationTitle()
-
             // it must come after deleting from database
             // becuase hashtagGroupList must at this point have the same number
             // of entries like the rows after the deletion happened
+            //
+            // .reloadData() is needed to update the section value (hashtag count)
+            // and sine it would interrupt the delete animation before it's finished
+            // we use CATransaction to do it after the animation is done
+            CATransaction.begin()
             tableView.deleteRows(at: [indexPath], with: .automatic)
+            CATransaction.setCompletionBlock({
+                self.tableView.reloadData()
+                self.sortHashtags()
+            })
+            CATransaction.commit()
         }
     }
 }
