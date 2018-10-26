@@ -65,10 +65,9 @@ extension HashtagGroupDetailVC: UITableViewDelegate, UITableViewDataSource {
         return hashtagGroup.hashtags.count
     }
 
-    // see: https://www.hackingwithswift.com/example-code/uikit/how-to-add-a-section-header-to-a-table-view
-    // google search: https://www.google.de/search?q=ios+tableview+section+header&oq=ios+tableview+section+header
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "Hashtags: \(hashtagGroup.hashtags.count)"
+        let warning = hashtagGroup.hashtags.count > 30 ? " (Instagram only allows 30)" : ""
+        return "Hashtags: \(hashtagGroup.hashtags.count)" + warning
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
