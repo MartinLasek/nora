@@ -150,6 +150,9 @@ extension HashtagGroupVC: UITableViewDelegate, UITableViewDataSource {
             hashtagRepository.removeHashtagGroupBy(hashtagGroupId: id)
             self.hashtagGroupList = hashtagRepository.selectAllHashtagGroups()
             completionHandler(true)
+            // reload tableView because your array of data has changed
+            // and the current cells with their index don't match anymore
+            self.tableView.reloadData()
         })
 
         let editTitle = "Edit"
