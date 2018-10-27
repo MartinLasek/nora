@@ -30,6 +30,10 @@ class HashtagGroupVC: UIViewController {
         tableView.dataSource = self
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        AppVisitManager.checkAndAskForReview()
+    }
+
     // `+` button action to add a new group
     @IBAction func addHashtagGroupButton(_ sender: Any) {
 
