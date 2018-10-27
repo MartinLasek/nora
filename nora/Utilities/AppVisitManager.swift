@@ -13,7 +13,9 @@ struct AppVisitManager {
 
         switch count {
         case _ where count%requiredOpenCount == 0:
-            SKStoreReviewController.requestReview()
+            if #available(iOS 10.3, *) {
+                SKStoreReviewController.requestReview()
+            }
         default:
             break
         }
