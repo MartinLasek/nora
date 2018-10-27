@@ -1,12 +1,12 @@
 <h2 align="center">
-  nora
+  nora:lasek
 </h2>
 <p align="center">
   Create groups according to your niche on Instagram and manage your hashtags
 </p>
 
 ## Download the App for free from the App Store
-<b> - To Be Published- </b>
+<b> iOS App: <a href="https://itunes.apple.com/us/app/nora-lasek/id1439162284">nora:lasek</a> </b>
 
 
 ## Download the Project and compile it on your machine
