@@ -46,7 +46,24 @@ class HashtagSearchVC: UIViewController {
     }
 
     @IBAction func cancelButton(_ sender: Any) {
-        self.dismiss(animated: true, completion: nil)
+
+        if !selectedHashtags.isEmpty {
+            // Create an alert controller with a textfield
+            let alert = UIAlertController(
+                title: "You have selected Hashtags",
+                message: "Do you want to cancel anyway?",
+                preferredStyle: .alert
+            )
+
+            alert.addAction(UIAlertAction(title: "No", style: .cancel))
+            alert.addAction(UIAlertAction(title: "Yes", style: .default, handler: { _ in
+                self.dismiss(animated: true, completion: nil)
+            }))
+
+            self.present(alert, animated: true, completion: nil)
+        } else {
+            self.dismiss(animated: true, completion: nil)
+        }
     }
 
     @IBAction func saveButton(_ sender: Any) {
