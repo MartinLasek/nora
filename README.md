@@ -6,7 +6,7 @@
 </p>
 
 ## Download the App for free from the App Store
-<b> - To Be Published- </b>
+<b> iOS App: <a href="https://itunes.apple.com/us/app/nora-lasek/id1439162284">nora:lasek</a> </b>
 
 
 ## Download the Project and compile it on your machine
