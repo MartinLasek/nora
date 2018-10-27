@@ -72,7 +72,7 @@ class HashtagGroupVC: UIViewController {
             guard
                 let cell = self.tableView.dequeueReusableCell(withIdentifier: self.cellIdentifier) as? HashtagGroupTableViewCell
             else {
-                fatalError("Could not downcast cell to HashtagCollectionTableViewCell")
+                fatalError("Could not downcast cell to HashtagGroupTableViewCell")
             }
 
             cell.hashtagGroupLabel.text = name
@@ -140,21 +140,77 @@ extension HashtagGroupVC: UITableViewDelegate, UITableViewDataSource {
         return cell
     }
 
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-
-        if editingStyle == .delete {
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let deleteTitle = "Delete"
+        let deleteAction = UIContextualAction(style: .destructive, title: deleteTitle, handler: { (action, view, completionHandler) in
             let hashtagGroup = self.hashtagGroupList[indexPath.row]
             guard let id = hashtagGroup.id else {
                 return
             }
-
             hashtagRepository.removeHashtagGroupBy(hashtagGroupId: id)
             self.hashtagGroupList = hashtagRepository.selectAllHashtagGroups()
+            completionHandler(true)
+        })
 
-            // it must come after deleting from database
-            // becuase hashtagGroupList must at this point have the same number
-            // of entries like the rows after the deletion happened
-            tableView.deleteRows(at: [indexPath], with: .automatic)
-        }
+        let editTitle = "Edit"
+        let editAction = UIContextualAction(style: .normal, title: editTitle, handler: { (action, view, completionHandler) in
+            // Create an alert controller with a textfield
+            let alert = UIAlertController(title: "Edit name", message: nil, preferredStyle: .alert)
+            alert.addTextField()
+
+            // prepoluate field with current name
+            let hashtagGroup = self.hashtagGroupList[indexPath.row]
+            alert.textFields?[0].text = hashtagGroup.name
+
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+
+            // [weak alert] means you want to use a local variable called `alert` inside
+            // of the closure with a weak reference so it is released after execution
+            alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { [weak alert] _ in
+
+                guard
+                    let alert = alert,
+                    let textFields = alert.textFields,
+                    !textFields.isEmpty,
+                    let name = textFields[0].text,
+                    !name.isEmpty  // We don't allow empty strings like: ""
+                else {
+                    print("Empty Name.")
+                    return
+                }
+
+                // Alert and early return
+                // if name for group already exists
+                if self.hashtagGroupList.contains(where: {
+                    self.normalizeString($0.name) == self.normalizeString(name)
+                }) {
+                    // Create an alert controller with a textfield
+                    let uniqueAlert = UIAlertController(title: "Name must be unique!", message: nil, preferredStyle: .alert)
+                    uniqueAlert.addAction(UIAlertAction(title: "Ok", style: .default))
+                    self.present(uniqueAlert, animated: true, completion: nil)
+                    return
+                }
+
+                hashtagRepository.updateHashtagGroupName(by: hashtagGroup.id ?? 0, name: name)
+                self.hashtagGroupList = hashtagRepository.selectAllHashtagGroups()
+
+                guard
+                    let cell = self.tableView.dequeueReusableCell(withIdentifier: self.cellIdentifier) as? HashtagGroupTableViewCell
+                else {
+                    fatalError("Could not downcast cell to HashtagGroupTableViewCell")
+                }
+
+                cell.hashtagGroupLabel.text = name
+                self.tableView.reloadData()
+            }))
+
+            self.present(alert, animated: true, completion: nil)
+            completionHandler(true)
+        })
+
+
+        //action.backgroundColor = .red
+        let configuration = UISwipeActionsConfiguration(actions: [deleteAction, editAction])
+        return configuration
     }
 }

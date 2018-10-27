@@ -158,7 +158,7 @@ print(fileURL)
             return
         }
 
-        //executing the query to insert values
+        //executing the query to delete the hashtag group
         if sqlite3_step(stmt) != SQLITE_DONE {
             let errmsg = String(cString: sqlite3_errmsg(db)!)
             print("failure delete hashtagGroup with id \(id): \(errmsg)")
@@ -166,6 +166,25 @@ print(fileURL)
         }
 
         removeAllHashtags(by: hashtagGroupId)
+    }
+
+    func updateHashtagGroupName(by hashtagGroupId: HashtagGroupId, name: String) {
+        var stmt: OpaquePointer?
+        let id = String(hashtagGroupId)
+
+        // preparing the query
+        if sqlite3_prepare(db, "UPDATE HashtagGroup SET name='\(name)' WHERE id=\(id)", -1, &stmt, nil) != SQLITE_OK{
+            let errmsg = String(cString: sqlite3_errmsg(db)!)
+            print("error update: \(errmsg)")
+            return
+        }
+
+        //executing the query to update the hashtag group
+        if sqlite3_step(stmt) != SQLITE_DONE {
+            let errmsg = String(cString: sqlite3_errmsg(db)!)
+            print("failure update hashtagGroup name with id \(id): \(errmsg)")
+            return
+        }
     }
 
     // MARK: Hashtag
