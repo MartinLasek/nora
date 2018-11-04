@@ -43,25 +43,9 @@ class HashtagGroupVC: UIViewController {
         // of the closure with a weak reference so it is released after execution
         alert.addAction(UIAlertAction(title: "Create", style: .default, handler: { [weak alert] _ in
 
-            guard
-                let alert = alert,
-                let textFields = alert.textFields,
-                !textFields.isEmpty,
-                let name = textFields[0].text,
-                !name.isEmpty  // We don't allow empty strings like: ""
-            else {
-                print("Empty Name.")
-                return
-            }
-
-            // Alert and early return
-            // if name for group already exists
-            if self.hashtagGroupList.contains(where: {
-                self.normalizeString($0.name) == self.normalizeString(name)
-            }) {
-                // Create an alert controller with a textfield
-                let uniqueAlert = UIAlertController(title: "Name must be unique!", message: nil, preferredStyle: .alert)
-                uniqueAlert.addAction(UIAlertAction(title: "Ok", style: .default))
+            let name = AlertManager.textFieldValue(from: alert)
+            if !name.isEmpty && self.isHashtagGroupNameUnique(name) {
+                let uniqueAlert = AlertManager.uniqueName()
                 self.present(uniqueAlert, animated: true, completion: nil)
                 return
             }
@@ -69,13 +53,6 @@ class HashtagGroupVC: UIViewController {
             hashtagRepository.insert(HashtagGroup(name: name))
             self.hashtagGroupList = hashtagRepository.selectAllHashtagGroups()
 
-            guard
-                let cell = self.tableView.dequeueReusableCell(withIdentifier: self.cellIdentifier) as? HashtagGroupTableViewCell
-            else {
-                fatalError("Could not downcast cell to HashtagGroupTableViewCell")
-            }
-
-            cell.hashtagGroupLabel.text = name
             self.tableView.reloadData()
         }))
 
@@ -91,7 +68,7 @@ class HashtagGroupVC: UIViewController {
         }
     }
 
-    func loadHashtagGroups() {
+    private func loadHashtagGroups() {
         hashtagGroupList = hashtagRepository.selectAllHashtagGroups()
         self.tableView.reloadData()
     }
@@ -101,6 +78,12 @@ class HashtagGroupVC: UIViewController {
         result = result.trimmingCharacters(in: .whitespaces)
         result = result.lowercased()
         return result
+    }
+
+    private func isHashtagGroupNameUnique(_ name: String) -> Bool {
+        return hashtagGroupList.contains {
+            self.normalizeString($0.name) == self.normalizeString(name)
+        }
     }
 }
 
@@ -171,25 +154,9 @@ extension HashtagGroupVC: UITableViewDelegate, UITableViewDataSource {
             // of the closure with a weak reference so it is released after execution
             alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { [weak alert] _ in
 
-                guard
-                    let alert = alert,
-                    let textFields = alert.textFields,
-                    !textFields.isEmpty,
-                    let name = textFields[0].text,
-                    !name.isEmpty  // We don't allow empty strings like: ""
-                else {
-                    print("Empty Name.")
-                    return
-                }
-
-                // Alert and early return
-                // if name for group already exists
-                if self.hashtagGroupList.contains(where: {
-                    self.normalizeString($0.name) == self.normalizeString(name)
-                }) {
-                    // Create an alert controller with a textfield
-                    let uniqueAlert = UIAlertController(title: "Name must be unique!", message: nil, preferredStyle: .alert)
-                    uniqueAlert.addAction(UIAlertAction(title: "Ok", style: .default))
+                let name = AlertManager.textFieldValue(from: alert)
+                if !name.isEmpty && self.isHashtagGroupNameUnique(name) {
+                    let uniqueAlert = AlertManager.uniqueName()
                     self.present(uniqueAlert, animated: true, completion: nil)
                     return
                 }
@@ -197,13 +164,6 @@ extension HashtagGroupVC: UITableViewDelegate, UITableViewDataSource {
                 hashtagRepository.updateHashtagGroupName(by: hashtagGroup.id ?? 0, name: name)
                 self.hashtagGroupList = hashtagRepository.selectAllHashtagGroups()
 
-                guard
-                    let cell = self.tableView.dequeueReusableCell(withIdentifier: self.cellIdentifier) as? HashtagGroupTableViewCell
-                else {
-                    fatalError("Could not downcast cell to HashtagGroupTableViewCell")
-                }
-
-                cell.hashtagGroupLabel.text = name
                 self.tableView.reloadData()
             }))
 
