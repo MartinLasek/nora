@@ -44,7 +44,7 @@ class HashtagGroupVC: UIViewController {
         alert.addAction(UIAlertAction(title: "Create", style: .default, handler: { [weak alert] _ in
 
             let name = AlertManager.textFieldValue(from: alert)
-            if !name.isEmpty && self.isHashtagGroupNameUnique(name) {
+            if self.normalizeString(name).isEmpty || self.doesHashtagGroupNameExist(name) {
                 let uniqueAlert = AlertManager.uniqueName()
                 self.present(uniqueAlert, animated: true, completion: nil)
                 return
@@ -80,7 +80,7 @@ class HashtagGroupVC: UIViewController {
         return result
     }
 
-    private func isHashtagGroupNameUnique(_ name: String) -> Bool {
+    private func doesHashtagGroupNameExist(_ name: String) -> Bool {
         return hashtagGroupList.contains {
             self.normalizeString($0.name) == self.normalizeString(name)
         }
@@ -155,7 +155,7 @@ extension HashtagGroupVC: UITableViewDelegate, UITableViewDataSource {
             alert.addAction(UIAlertAction(title: "Save", style: .default, handler: { [weak alert] _ in
 
                 let name = AlertManager.textFieldValue(from: alert)
-                if !name.isEmpty && self.isHashtagGroupNameUnique(name) {
+                if self.normalizeString(name).isEmpty || self.doesHashtagGroupNameExist(name) {
                     let uniqueAlert = AlertManager.uniqueName()
                     self.present(uniqueAlert, animated: true, completion: nil)
                     return
